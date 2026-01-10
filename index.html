@@ -158,14 +158,33 @@
       showMP(currentEntries[index]);
     }
 
-    function showMP(entry) {
-      const mp = entry.mp;
-      document.getElementById("mpResult").innerHTML = `
-        <h2>${mp.full_name}</h2>
-        <p><strong>Electorate:</strong> ${entry.electorate}</p>
-        <p><strong>Party:</strong> ${mp.party}</p>
-        <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
-      `;
+function showMP(entry) {
+  const mp = entry.mp;
+
+  document.getElementById("mpResult").innerHTML = `
+    <h2>${mp.full_name}</h2>
+    <p><strong>Electorate:</strong> ${entry.electorate}</p>
+    <p><strong>Party:</strong> ${mp.party}</p>
+    <p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>
+    <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
+
+    <button style="
+      margin-top: 15px;
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      background: #5A7F71;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    "
+    onclick="window.location.href='mailto:${mp.email}?subject=Message from a constituent&body=Dear ${mp.full_name},%0D%0A%0D%0A'">
+      Contact My MP
+    </button>
+  `;
+}
     }
   </script>
 
