@@ -196,27 +196,25 @@
 }
 
 
-        contactButton = `
-          <a
-            href="${mailto}"
-            style="
-              display: inline-block;
-              width: 100%;
-              margin-top: 15px;
-              padding: 14px;
-              font-size: 18px;
-              text-align: center;
-              background: #5A7F71;
-              color: white;
-              border-radius: 6px;
-              font-weight: bold;
-              cursor: pointer;
-              text-decoration: none;
-            "
-          >
-            Contact My MP
-          </a>
-        `;
+   contactButton = `
+  <button
+    style="
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      font-size: 18px;
+      background: #5A7F71;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    "
+    onclick="tryMailto('${mailto}')"
+  >
+    Contact My MP
+  </button>
+`;
+
       } else {
         emailBlock = `<p><strong>Email:</strong> Not available</p>`;
       }
