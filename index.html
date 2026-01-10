@@ -117,6 +117,8 @@
   <div id="mpResult"></div>
 
   <script>
+
+    
     let lookup = {};
     let currentEntries = [];
 
@@ -174,6 +176,25 @@
         const mailto = `mailto:${mp.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
+
+    function tryMailto(link) {
+        let opened = false;
+
+        // Try to open the mail client
+         window.location.href = link;
+
+         // If the browser successfully hands off to an email app,
+        // the page loses focus. We detect that.
+        window.addEventListener("blur", () => opened = true, { once: true });
+
+        // After 800ms, if no blur happened, assume failure
+        setTimeout(() => {
+        if (!opened) {
+        alert("It looks like no email app is configured on this device.");
+    }
+  }, 800);
+}
+
 
         contactButton = `
           <a
