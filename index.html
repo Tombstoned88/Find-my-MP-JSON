@@ -117,118 +117,113 @@
   <div id="mpResult"></div>
 
   <script>
+  let lookup = {};
+  let currentEntries = [];
 
-    
-    let lookup = {};
-    let currentEntries = [];
+  // Load the postcode → MP data
+  fetch("https://raw.githubusercontent.com/Tombstoned88/Find-my-MP-JSON/main/postcode_to_mp.json")
+    .then(r => r.json())
+    .then(data => lookup = data)
+    .catch(err => console.error("Failed to load JSON", err));
 
-    fetch("https://raw.githubusercontent.com/Tombstoned88/Find-my-MP-JSON/main/postcode_to_mp.json")
-      .then(r => r.json())
-      .then(data => lookup = data)
-      .catch(err => console.error("Failed to load JSON", err));
+  // Try to open mail client, show message if none is configured
+  function tryMailto(link) {
+    let opened = false;
 
-    function lookupPostcode() {
-      const postcode = document.getElementById("postcodeInput").value.trim();
-      const entries = lookup[postcode];
+    window.location.href = link;
 
-      document.getElementById("suburbChooser").style.display = "none";
-      document.getElementById("mpResult").innerHTML = "";
+    window.addEventListener("blur", () => opened = true, { once: true });
 
-      if (!entries) {
-        document.getElementById("mpResult").textContent = "No results found for that postcode.";
-        return;
-      }
-
-      currentEntries = entries;
-
-      if (entries.length === 1) {
-        showMP(entries[0]);
-        return;
-      }
-
-      const select = document.getElementById("suburbSelect");
-      select.innerHTML = "";
-
-      entries.forEach((entry, index) => {
-        const opt = document.createElement("option");
-        opt.value = index;
-        opt.textContent = entry.suburb + " (" + entry.electorate + ")";
-        select.appendChild(opt);
-      });
-
-      document.getElementById("suburbChooser").style.display = "block";
-    }
-
-    function suburbChosen() {
-      const index = document.getElementById("suburbSelect").value;
-      showMP(currentEntries[index]);
-    }
-
-    function showMP(entry) {
-      const mp = entry.mp;
-
-      let emailBlock = "";
-      let contactButton = "";
-
-      if (mp.email) {
-        const subject = `Message from a constituent`;
-        const body = `Dear ${mp.full_name},\n\n`;
-        const mailto = `mailto:${mp.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
-
-    function tryMailto(link) {
-        let opened = false;
-
-        // Try to open the mail client
-         window.location.href = link;
-
-         // If the browser successfully hands off to an email app,
-        // the page loses focus. We detect that.
-        window.addEventListener("blur", () => opened = true, { once: true });
-
-        // After 800ms, if no blur happened, assume failure
-        setTimeout(() => {
-        if (!opened) {
+    setTimeout(() => {
+      if (!opened) {
         alert("It looks like no email app is configured on this device.");
-    }
-  }, 800);
-}
-
-
-   contactButton = `
-  <button
-    style="
-      width: 100%;
-      margin-top: 15px;
-      padding: 14px;
-      font-size: 18px;
-      background: #5A7F71;
-      color: white;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    "
-    onclick="tryMailto('${mailto}')"
-  >
-    Contact My MP
-  </button>
-`;
-
-      } else {
-        emailBlock = `<p><strong>Email:</strong> Not available</p>`;
       }
+    }, 800);
+  }
 
-      document.getElementById("mpResult").innerHTML = `
-        <h2>${mp.full_name}</h2>
-        <p><strong>Electorate:</strong> ${entry.electorate}</p>
-        <p><strong>Party:</strong> ${mp.party}</p>
-        ${emailBlock}
-        <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
-        ${contactButton}
-      `;
+  function lookupPostcode() {
+    const postcode = document.getElementById("postcodeInput").value.trim();
+    const entries = lookup[postcode];
+
+    document.getElementById("suburbChooser").style.display = "none";
+    document.getElementById("mpResult").innerHTML = "";
+
+    if (!entries) {
+      document.getElementById("mpResult").textContent = "No results found for that postcode.";
+      return;
     }
-  </script>
 
+    currentEntries = entries;
+
+    if (entries.length === 1) {
+      showMP(entries[0]);
+      return;
+    }
+
+    const select = document.getElementById("suburbSelect");
+    select.innerHTML = "";
+
+    entries.forEach((entry, index) => {
+      const opt = document.createElement("option");
+      opt.value = index;
+      opt.textContent = entry.suburb + " (" + entry.electorate + ")";
+      select.appendChild(opt);
+    });
+
+    document.getElementById("suburbChooser").style.display = "block";
+  }
+
+  function suburbChosen() {
+    const index = document.getElementById("suburbSelect").value;
+    showMP(currentEntries[index]);
+  }
+
+  function showMP(entry) {
+    const mp = entry.mp;
+
+    let emailBlock = "";
+    let contactButton = "";
+
+    if (mp.email) {
+      const subject = "Message from a constituent";
+      const body = `Dear ${mp.full_name},\n\n`;
+      const mailto = `mailto:${mp.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
+
+      contactButton = `
+        <button
+          style="
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            font-size: 18px;
+            background: #5A7F71;
+            color: white;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+          "
+          onclick="tryMailto('${mailto}')"
+        >
+          Contact My MP
+        </button>
+      `;
+    } else {
+      emailBlock = `<p><strong>Email:</strong> Not available</p>`;
+      contactButton = "";
+    }
+
+    document.getElementById("mpResult").innerHTML = `
+      <h2>${mp.full_name}</h2>
+      <p><strong>Electorate:</strong> ${entry.electorate}</p>
+      <p><strong>Party:</strong> ${mp.party}</p>
+      ${emailBlock}
+      <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
+      ${contactButton}
+    `;
+  }
+</script>
+  
 </body>
 </html>
