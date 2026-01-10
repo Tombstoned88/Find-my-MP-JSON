@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Find My MP</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      background: #2c7be5;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1a5fc4;
+    }
+
+    #suburbChooser {
+      margin-top: 20px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    #mpResult {
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Find Your Federal MP</h1>
+  <p>Enter your postcode to find your electorate and MP.</p>
+
+  <input id="postcodeInput" placeholder="Enter your postcode">
+  <button onclick="lookupPostcode()">Find My MP</button>
+
+  <div id="suburbChooser" style="display:none;">
+    <p>Select your suburb:</p>
+    <select id="suburbSelect" onchange="suburbChosen()"></select>
+  </div>
+
+  <div id="mpResult"></div>
+
+  <script>
+    let lookup = {};
+    let currentEntries = [];
+
+    // Load your JSON from GitHub
+    fetch("https://raw.githubusercontent.com/Tombstoned88/Find-my-MP-JSON/main/postcode_to_mp.json")
+      .then(r => r.json())
+      .then(data => lookup = data)
+      .catch(err => console.error("Failed to load JSON", err));
+
+    function lookupPostcode() {
+      const postcode = document.getElementById("postcodeInput").value.trim();
+      const entries = lookup[postcode];
+
+      document.getElementById("suburbChooser").style.display = "none";
+      document.getElementById("mpResult").innerHTML = "";
+
+      if (!entries) {
+        document.getElementById("mpResult").textContent = "No results found for that postcode.";
+        return;
+      }
+
+      currentEntries = entries;
+
+      if (entries.length === 1) {
+        showMP(entries[0]);
+        return;
+      }
+
+      const select = document.getElementById("suburbSelect");
+      select.innerHTML = "";
+
+      entries.forEach((entry, index) => {
+        const opt = document.createElement("option");
+        opt.value = index;
+        opt.textContent = entry.suburb + " (" + entry.electorate + ")";
+        select.appendChild(opt);
+      });
+
+      document.getElementById("suburbChooser").style.display = "block";
+    }
+
+    function suburbChosen() {
+      const index = document.getElementById("suburbSelect").value;
+      showMP(currentEntries[index]);
+    }
+
+    function showMP(entry) {
+      const mp = entry.mp;
+      document.getElementById("mpResult").innerHTML = `
+        <h2>${mp.full_name}</h2>
+        <p><strong>Electorate:</strong> ${entry.electorate}</p>
+        <p><strong>Party:</strong> ${mp.party}</p>
+        <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
