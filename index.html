@@ -16,7 +16,7 @@
     }
 
     h1 {
-      color: #5A7F71; /* eucalyptus green */
+      color: #5A7F71;
       font-size: 32px;
       margin-bottom: 10px;
       font-weight: 700;
@@ -41,7 +41,7 @@
       width: 100%;
       padding: 14px;
       font-size: 18px;
-      background: #D4AF37; /* gold */
+      background: #D4AF37;
       color: #1A1A1A;
       border: none;
       border-radius: 6px;
@@ -89,6 +89,10 @@
     a:hover {
       text-decoration: underline;
     }
+
+    #mpResult:empty {
+      display: none;
+    }
   </style>
 </head>
 
@@ -97,8 +101,8 @@
   <h1>Find Your Federal MP</h1>
 
   <p>
-    Less than 5% of Australians ever contact their federal MP.  
-    This is the person who is meant to represent you in Parliament.  
+    Less than 5% of Australians ever contact their federal MP.
+    This is the person who is meant to represent you in Parliament.
     Enter your postcode to find your MP.
   </p>
 
@@ -158,33 +162,43 @@
       showMP(currentEntries[index]);
     }
 
-function showMP(entry) {
-  const mp = entry.mp;
+    function showMP(entry) {
+      const mp = entry.mp;
 
-  document.getElementById("mpResult").innerHTML = `
-    <h2>${mp.full_name}</h2>
-    <p><strong>Electorate:</strong> ${entry.electorate}</p>
-    <p><strong>Party:</strong> ${mp.party}</p>
-    <p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>
-    <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
+      let emailBlock = "";
+      let contactButton = "";
 
-    <button style="
-      margin-top: 15px;
-      width: 100%;
-      padding: 14px;
-      font-size: 18px;
-      background: #5A7F71;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    "
-    onclick="window.location.href='mailto:${mp.email}?subject=Message from a constituent&body=Dear ${mp.full_name},%0D%0A%0D%0A'">
-      Contact My MP
-    </button>
-  `;
-}
+      if (mp.email) {
+        emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
+        contactButton = `
+          <button style="
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            font-size: 18px;
+            background: #5A7F71;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+          "
+          onclick="window.location.href='mailto:${mp.email}?subject=Message from a constituent&body=Dear ${mp.full_name},%0D%0A%0D%0A'">
+            Contact My MP
+          </button>
+        `;
+      } else {
+        emailBlock = `<p><strong>Email:</strong> Not available</p>`;
+      }
+
+      document.getElementById("mpResult").innerHTML = `
+        <h2>${mp.full_name}</h2>
+        <p><strong>Electorate:</strong> ${entry.electorate}</p>
+        <p><strong>Party:</strong> ${mp.party}</p>
+        ${emailBlock}
+        <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
+        ${contactButton}
+      `;
     }
   </script>
 
