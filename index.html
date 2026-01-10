@@ -170,18 +170,28 @@
 
       if (mp.email) {
         emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
-        contactButton = `
-          <button style="
-            width: 100%;
-            margin-top: 15px;
-            padding: 14px;
-            font-size: 18px;
-            background: #5A7F71;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
+   const subject = `Concerned constituent does not conesnt to mass immigration`;
+const body = `Dear ${mp.full_name},\n\n`;
+
+const mailto = `mailto:${mp.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+contactButton = `
+  <button style="
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    font-size: 18px;
+    background: #5AF771;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  "
+  onclick="window.location.href='${mailto}'">
+    Contact My MP
+  </button>
+`;
           "
           onclick="window.location.href='mailto:${mp.email}?subject=Message from a constituent&body=Dear ${mp.full_name},%0D%0A%0D%0A'">
             Contact My MP
