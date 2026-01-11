@@ -7,14 +7,25 @@
 
   <style>
     /* Base layout */
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: Arial, sans-serif;
       max-width: 650px;
+      width: 100%;
       margin: 30px auto;
       padding: 20px;
       background: #F7F7F5;
       color: #1A1A1A;
       line-height: 1.6;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    * {
       box-sizing: border-box;
     }
 
@@ -31,19 +42,22 @@
       margin-bottom: 18px;
     }
 
-    input, select {
-      box-sizing: border-box;
+    input,
+    select {
       width: 100%;
+      max-width: 100%;
       padding: 14px;
       font-size: 18px;
       border: 2px solid #5A7F71;
       border-radius: 6px;
       margin-bottom: 12px;
       background: white;
+      display: block;
     }
 
     button {
       width: 100%;
+      max-width: 100%;
       padding: 14px;
       font-size: 18px;
       background: #D4AF37;
@@ -54,6 +68,7 @@
       font-weight: bold;
       letter-spacing: 0.5px;
       transition: background 0.2s ease;
+      display: block;
     }
 
     button:hover {
@@ -61,16 +76,9 @@
     }
 
     .contact-btn {
-      width: 100%;
       margin-top: 15px;
-      padding: 14px;
-      font-size: 18px;
       background: #5A7F71;
       color: white;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s ease;
     }
 
     .contact-btn:hover {
@@ -98,6 +106,7 @@
       color: #D4AF37;
       font-weight: bold;
       text-decoration: none;
+      word-break: break-word;
     }
 
     a:hover {
@@ -123,7 +132,9 @@
         font-size: 16px;
       }
 
-      input, select, button, .contact-btn {
+      input,
+      select,
+      button {
         font-size: 16px;
         padding: 12px;
       }
@@ -159,14 +170,18 @@
     let lookup = {};
     let currentEntries = [];
 
+    // Load the postcode → MP data
     fetch("https://raw.githubusercontent.com/Tombstoned88/Find-my-MP-JSON/main/postcode_to_mp.json")
       .then(r => r.json())
       .then(data => lookup = data)
       .catch(err => console.error("Failed to load JSON", err));
 
+    // Try to open mail client, show message if none is configured
     function tryMailto(link) {
       let opened = false;
+
       window.location.href = link;
+
       window.addEventListener("blur", () => opened = true, { once: true });
 
       setTimeout(() => {
@@ -198,10 +213,12 @@
         return;
       }
 
+      // Placeholder so first real suburb is always clickable
       const placeholder = document.createElement("option");
       placeholder.textContent = "Select your suburb...";
       placeholder.disabled = true;
       placeholder.selected = true;
+      placeholder.value = "";
       select.appendChild(placeholder);
 
       entries.forEach((entry, index) => {
@@ -215,41 +232,70 @@
     }
 
     function suburbChosen() {
-      const index = document.getElementById("suburbSelect").value;
-      if (index === "") return;
+      const select = document.getElementById("suburbSelect");
+      const index = select.value;
+      if (index === "") return; // still on placeholder
       showMP(currentEntries[index]);
     }
 
     function showMP(entry) {
       const mp = entry.mp;
 
-      let emailBlock = "";
-      let contactButton = "";
+      const mpResult = document.getElementById("mpResult");
+      mpResult.innerHTML = "";
+
+      const title = document.createElement("h2");
+      title.textContent = mp.full_name;
+      mpResult.appendChild(title);
+
+      const electorateP = document.createElement("p");
+      electorateP.innerHTML = "<strong>Electorate:</strong> " + entry.electorate;
+      mpResult.appendChild(electorateP);
+
+      const partyP = document.createElement("p");
+      partyP.innerHTML = "<strong>Party:</strong> " + mp.party;
+      mpResult.appendChild(partyP);
 
       if (mp.email) {
+        const emailP = document.createElement("p");
+        emailP.innerHTML = '<strong>Email:</strong> <a href="mailto:' + mp.email + '">' + mp.email + '</a>';
+        mpResult.appendChild(emailP);
+
+        const profileP = document.createElement("p");
+        const profileLink = document.createElement("a");
+        profileLink.href = mp.profile_page;
+        profileLink.target = "_blank";
+        profileLink.textContent = "View MP Profile";
+        profileP.appendChild(profileLink);
+        mpResult.appendChild(profileP);
+
         const subject = "Message from a constituent";
-        const body = `Dear ${mp.full_name},\n\n`;
-        const mailto = `mailto:${mp.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const body = "Dear " + mp.full_name + ",\n\n";
+        const mailto = "mailto:" + mp.email +
+          "?subject=" + encodeURIComponent(subject) +
+          "&body=" + encodeURIComponent(body);
 
-        emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
+        const contactBtn = document.createElement("button");
+        contactBtn.className = "contact-btn";
+        contactBtn.textContent = "CONTACT YOUR MP";
+        contactBtn.addEventListener("click", function () {
+          tryMailto(mailto);
+        });
+        mpResult.appendChild(contactBtn);
 
-        contactButton = `
-          <button class="contact-btn" onclick="tryMailto('${mailto}')">
-            CONTACT YOUR MP
-          </button>
-        `;
       } else {
-        emailBlock = `<p><strong>Email:</strong> Not available</p>`;
-      }
+        const emailP = document.createElement("p");
+        emailP.innerHTML = "<strong>Email:</strong> Not available";
+        mpResult.appendChild(emailP);
 
-      document.getElementById("mpResult").innerHTML = `
-        <h2>${mp.full_name}</h2>
-        <p><strong>Electorate:</strong> ${entry.electorate}</p>
-        <p><strong>Party:</strong> ${mp.party}</p>
-        ${emailBlock}
-        <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
-        ${contactButton}
-      `;
+        const profileP = document.createElement("p");
+        const profileLink = document.createElement("a");
+        profileLink.href = mp.profile_page;
+        profileLink.target = "_blank";
+        profileLink.textContent = "View MP Profile";
+        profileP.appendChild(profileLink);
+        mpResult.appendChild(profileP);
+      }
     }
   </script>
 
