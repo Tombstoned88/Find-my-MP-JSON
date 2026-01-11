@@ -12,6 +12,10 @@
       padding: 0;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       max-width: 650px;
@@ -21,12 +25,7 @@
       background: #F7F7F5;
       color: #1A1A1A;
       line-height: 1.6;
-      box-sizing: border-box;
       overflow-x: hidden;
-    }
-
-    * {
-      box-sizing: border-box;
     }
 
     h1 {
@@ -240,59 +239,60 @@
 
     function showMP(entry) {
       const mp = entry.mp;
+      const firstName = mp.full_name.split(" ")[0];
 
       const mpResult = document.getElementById("mpResult");
-      mpResult.innerHTML = "";
 
-      const title = document.createElement("h2");
-      title.textContent = mp.full_name;
-      mpResult.appendChild(title);
-
-      const electorateP = document.createElement("p");
-      electorateP.innerHTML = "<strong>Electorate:</strong> " + entry.electorate;
-      mpResult.appendChild(electorateP);
-
-      const partyP = document.createElement("p");
-      partyP.innerHTML = "<strong>Party:</strong> " + mp.party;
-      mpResult.appendChild(partyP);
+      // Build the main block as HTML so we can easily insert the "find out more" line
+      let emailBlock = "";
+      let profileLine = `
+        <p>
+          Find out more about ${firstName}:
+          <a href="${mp.profile_page}" target="_blank">View MP Profile</a>
+        </p>
+      `;
+      let contactButtonHtml = "";
 
       if (mp.email) {
-        const emailP = document.createElement("p");
-        emailP.innerHTML = '<strong>Email:</strong> <a href="mailto:' + mp.email + '">' + mp.email + '</a>';
-        mpResult.appendChild(emailP);
+        emailBlock = `
+          <p>
+            <strong>Email:</strong>
+            <a href="mailto:${mp.email}">${mp.email}</a>
+          </p>
+        `;
 
-     const profileP = document.createElement("p");
-     const firstName = mp.full_name.split(" ")[0];
-     profileP.innerHTML = `Find out more about ${firstName}: <a href="${mp.profile_page}" target="_blank">View MP Profile</a>`;
-     mpResult.appendChild(profileP);
+        contactButtonHtml = `
+          <button id="contactMpButton" class="contact-btn">
+            CONTACT YOUR MP
+          </button>
+        `;
+      } else {
+        emailBlock = `<p><strong>Email:</strong> Not available</p>`;
+      }
 
+      mpResult.innerHTML = `
+        <h2>${mp.full_name}</h2>
+        <p><strong>Electorate:</strong> ${entry.electorate}</p>
+        <p><strong>Party:</strong> ${mp.party}</p>
+        ${emailBlock}
+        ${profileLine}
+        ${contactButtonHtml}
+      `;
 
+      // Wire up the CONTACT YOUR MP button if email exists
+      if (mp.email) {
         const subject = "Message from a constituent";
         const body = "Dear " + mp.full_name + ",\n\n";
         const mailto = "mailto:" + mp.email +
           "?subject=" + encodeURIComponent(subject) +
           "&body=" + encodeURIComponent(body);
 
-        const contactBtn = document.createElement("button");
-        contactBtn.className = "contact-btn";
-        contactBtn.textContent = "CONTACT YOUR MP";
-        contactBtn.addEventListener("click", function () {
-          tryMailto(mailto);
-        });
-        mpResult.appendChild(contactBtn);
-
-      } else {
-        const emailP = document.createElement("p");
-        emailP.innerHTML = "<strong>Email:</strong> Not available";
-        mpResult.appendChild(emailP);
-
-        const profileP = document.createElement("p");
-        const profileLink = document.createElement("a");
-        profileLink.href = mp.profile_page;
-        profileLink.target = "_blank";
-        profileLink.textContent = "View MP Profile";
-        profileP.appendChild(profileLink);
-        mpResult.appendChild(profileP);
+        const contactBtn = document.getElementById("contactMpButton");
+        if (contactBtn) {
+          contactBtn.addEventListener("click", function () {
+            tryMailto(mailto);
+          });
+        }
       }
     }
   </script>
