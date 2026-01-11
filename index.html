@@ -5,117 +5,153 @@
   <meta charset="UTF-8">
   <title>Find My MP</title>
 
-  <style>
+<style>
+  /* Base layout */
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 650px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #F7F7F5;
+    color: #1A1A1A;
+    line-height: 1.6;
+  }
+
+  h1 {
+    color: #5A7F71;
+    font-size: 32px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  p {
+    font-size: 18px;
+    margin-bottom: 18px;
+  }
+
+  /* Inputs */
+  input {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    border: 2px solid #5A7F71;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    background: white;
+  }
+
+  /* Buttons */
+  button {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    background: #D4AF37;
+    color: #1A1A1A;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: background 0.2s ease;
+  }
+
+  button:hover {
+    background: #c19c2f;
+  }
+
+  /* Contact button */
+  .contact-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    font-size: 18px;
+    background: #5A7F71;
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .contact-btn:hover {
+    background: #4a6b60;
+  }
+
+  /* Suburb dropdown */
+  #suburbChooser {
+    margin-top: 20px;
+  }
+
+  select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #5A7F71;
+    border-radius: 6px;
+    background: white;
+  }
+
+  /* MP result box */
+  #mpResult {
+    margin-top: 30px;
+    padding: 20px;
+    border: 2px solid #D4AF37;
+    border-radius: 8px;
+    background: #ffffff;
+  }
+
+  #mpResult h2 {
+    margin-top: 0;
+    color: #5A7F71;
+  }
+
+  a {
+    color: #D4AF37;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  #mpResult:empty {
+    display: none;
+  }
+
+  /* 🔥 Mobile tightening */
+  @media (max-width: 600px) {
     body {
-      font-family: Arial, sans-serif;
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #F7F7F5;
-      color: #1A1A1A;
-      line-height: 1.6;
+      margin: 10px;
+      padding: 15px;
     }
 
     h1 {
-      color: #5A7F71;
-      font-size: 32px;
+      font-size: 26px;
       margin-bottom: 10px;
-      font-weight: 700;
     }
 
     p {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      font-size: 18px;
-      border: 2px solid #5A7F71;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      background: white;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      font-size: 18px;
-      background: #D4AF37;
-      color: #1A1A1A;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
-
-    button:hover {
-      background: #c19c2f;
-    }
-
-    #suburbChooser {
-      margin-top: 20px;
-    }
-
-    select {
-      width: 100%;
-      padding: 12px;
       font-size: 16px;
-      border: 2px solid #5A7F71;
-      border-radius: 6px;
-      background: white;
+    }
+
+    input,
+    button {
+      font-size: 16px;
+      padding: 12px;
+    }
+
+    .contact-btn {
+      font-size: 16px;
+      padding: 12px;
     }
 
     #mpResult {
-      margin-top: 30px;
-      padding: 20px;
-      border: 2px solid #D4AF37;
-      border-radius: 8px;
-      background: #ffffff;
+      padding: 16px;
     }
-
-    #mpResult h2 {
-      margin-top: 0;
-      color: #5A7F71;
-    }
-
-    a {
-      color: #D4AF37;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    #mpResult:empty {
-      display: none;
-      
-      .contact-btn {
-  width: 100%;
-  margin-top: 15px;
-  padding: 14px;
-  font-size: 18px;
-  background: #5A7F71;
-  color: white;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-@media (max-width: 600px) {
-  .contact-btn {
-    font-size: 16px;
-    padding: 12px;
   }
-}
-
-      
-    }
-  </style>
+</style>
 </head>
 
 <body>
@@ -142,18 +178,14 @@
   let lookup = {};
   let currentEntries = [];
 
-  // Load the postcode → MP data
   fetch("https://raw.githubusercontent.com/Tombstoned88/Find-my-MP-JSON/main/postcode_to_mp.json")
     .then(r => r.json())
     .then(data => lookup = data)
     .catch(err => console.error("Failed to load JSON", err));
 
-  // Try to open mail client, show message if none is configured
   function tryMailto(link) {
     let opened = false;
-
     window.location.href = link;
-
     window.addEventListener("blur", () => opened = true, { once: true });
 
     setTimeout(() => {
@@ -214,29 +246,12 @@
       emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
 
       contactButton = `
-        <button
-          style="
-            width: 100%;
-            margin-top: 15px;
-            padding: 14px;
-            font-size: 18px;
-            background: #5A7F71;
-            color: white;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-          "
-          class="contact-btn" onclick="tryMailto('${mailto}')">
-    Contact My MP
-
-          onclick="tryMailto('${mailto}')"
-        >
+        <button class="contact-btn" onclick="tryMailto('${mailto}')">
           Contact My MP
         </button>
       `;
     } else {
       emailBlock = `<p><strong>Email:</strong> Not available</p>`;
-      contactButton = "";
     }
 
     document.getElementById("mpResult").innerHTML = `
@@ -248,7 +263,7 @@
       ${contactButton}
     `;
   }
-</script>
-  
+  </script>
+
 </body>
 </html>
