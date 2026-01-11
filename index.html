@@ -261,13 +261,11 @@
         emailP.innerHTML = '<strong>Email:</strong> <a href="mailto:' + mp.email + '">' + mp.email + '</a>';
         mpResult.appendChild(emailP);
 
-        const profileP = document.createElement("p");
-        const profileLink = document.createElement("a");
-        profileLink.href = mp.profile_page;
-        profileLink.target = "_blank";
-        profileLink.textContent = "View MP Profile";
-        profileP.appendChild(profileLink);
-        mpResult.appendChild(profileP);
+     const profileP = document.createElement("p");
+     const firstName = mp.full_name.split(" ")[0];
+     profileP.innerHTML = `Find out more about ${firstName}: <a href="${mp.profile_page}" target="_blank">View MP Profile</a>`;
+     mpResult.appendChild(profileP);
+
 
         const subject = "Message from a constituent";
         const body = "Dear " + mp.full_name + ",\n\n";
