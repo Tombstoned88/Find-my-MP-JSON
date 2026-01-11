@@ -1,157 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Find My MP</title>
 
-<style>
-  /* Base layout */
-  body {
-    font-family: Arial, sans-serif;
-    max-width: 650px;
-    margin: 30px auto;
-    padding: 20px;
-    background: #F7F7F5;
-    color: #1A1A1A;
-    line-height: 1.6;
-  }
-
-  h1 {
-    color: #5A7F71;
-    font-size: 32px;
-    margin-bottom: 12px;
-    font-weight: 700;
-    text-align: center;
-  }
-
-  p {
-    font-size: 18px;
-    margin-bottom: 18px;
-  }
-
-  /* Inputs */
-  input {
-    width: 100%;
-    padding: 14px;
-    font-size: 18px;
-    border: 2px solid #5A7F71;
-    border-radius: 6px;
-    margin-bottom: 12px;
-    background: white;
-  }
-
-  /* Buttons */
-  button {
-    width: 100%;
-    padding: 14px;
-    font-size: 18px;
-    background: #D4AF37;
-    color: #1A1A1A;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    transition: background 0.2s ease;
-  }
-
-  button:hover {
-    background: #c19c2f;
-  }
-
-  /* Contact button */
-  .contact-btn {
-    width: 100%;
-    margin-top: 15px;
-    padding: 14px;
-    font-size: 18px;
-    background: #5A7F71;
-    color: white;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .contact-btn:hover {
-    background: #4a6b60;
-  }
-
-  /* Suburb dropdown */
-  #suburbChooser {
-    margin-top: 20px;
-  }
-
-  select {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 2px solid #5A7F71;
-    border-radius: 6px;
-    background: white;
-  }
-
-  /* MP result box */
-  #mpResult {
-    margin-top: 30px;
-    padding: 20px;
-    border: 2px solid #D4AF37;
-    border-radius: 8px;
-    background: #ffffff;
-  }
-
-  #mpResult h2 {
-    margin-top: 0;
-    color: #5A7F71;
-  }
-
-  a {
-    color: #D4AF37;
-    font-weight: bold;
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  #mpResult:empty {
-    display: none;
-  }
-
-  /* 🔥 Mobile tightening */
-  @media (max-width: 600px) {
+  <style>
+    /* Base layout */
     body {
-      margin: 10px;
-      padding: 15px;
+      font-family: Arial, sans-serif;
+      max-width: 650px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #F7F7F5;
+      color: #1A1A1A;
+      line-height: 1.6;
+      box-sizing: border-box;
     }
 
     h1 {
-      font-size: 26px;
-      margin-bottom: 10px;
+      color: #5A7F71;
+      font-size: 32px;
+      margin-bottom: 12px;
+      font-weight: 700;
+      text-align: center;
     }
 
     p {
-      font-size: 16px;
+      font-size: 18px;
+      margin-bottom: 18px;
     }
 
-    input,
+    input, select {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      border: 2px solid #5A7F71;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      background: white;
+    }
+
     button {
-      font-size: 16px;
-      padding: 12px;
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      background: #D4AF37;
+      color: #1A1A1A;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #c19c2f;
     }
 
     .contact-btn {
-      font-size: 16px;
-      padding: 12px;
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      font-size: 18px;
+      background: #5A7F71;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .contact-btn:hover {
+      background: #4a6b60;
+    }
+
+    #suburbChooser {
+      margin-top: 20px;
     }
 
     #mpResult {
-      padding: 16px;
+      margin-top: 30px;
+      padding: 20px;
+      border: 2px solid #D4AF37;
+      border-radius: 8px;
+      background: #ffffff;
     }
-  }
-</style>
+
+    #mpResult h2 {
+      margin-top: 0;
+      color: #5A7F71;
+    }
+
+    a {
+      color: #D4AF37;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    #mpResult:empty {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        margin: 10px;
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 26px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+
+      input, select, button, .contact-btn {
+        font-size: 16px;
+        padding: 12px;
+      }
+
+      #mpResult {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -175,94 +156,101 @@
   <div id="mpResult"></div>
 
   <script>
-  let lookup = {};
-  let currentEntries = [];
+    let lookup = {};
+    let currentEntries = [];
 
-  fetch("https://raw.githubusercontent.com/Tombstoned88/Find-my-MP-JSON/main/postcode_to_mp.json")
-    .then(r => r.json())
-    .then(data => lookup = data)
-    .catch(err => console.error("Failed to load JSON", err));
+    fetch("https://raw.githubusercontent.com/Tombstoned88/Find-my-MP-JSON/main/postcode_to_mp.json")
+      .then(r => r.json())
+      .then(data => lookup = data)
+      .catch(err => console.error("Failed to load JSON", err));
 
-  function tryMailto(link) {
-    let opened = false;
-    window.location.href = link;
-    window.addEventListener("blur", () => opened = true, { once: true });
+    function tryMailto(link) {
+      let opened = false;
+      window.location.href = link;
+      window.addEventListener("blur", () => opened = true, { once: true });
 
-    setTimeout(() => {
-      if (!opened) {
-        alert("It looks like no email app is configured on this device.");
+      setTimeout(() => {
+        if (!opened) {
+          alert("It looks like no email app is configured on this device.");
+        }
+      }, 800);
+    }
+
+    function lookupPostcode() {
+      const postcode = document.getElementById("postcodeInput").value.trim();
+      const entries = lookup[postcode];
+
+      document.getElementById("suburbChooser").style.display = "none";
+      document.getElementById("mpResult").innerHTML = "";
+
+      if (!entries) {
+        document.getElementById("mpResult").textContent = "No results found for that postcode.";
+        return;
       }
-    }, 800);
-  }
 
-  function lookupPostcode() {
-    const postcode = document.getElementById("postcodeInput").value.trim();
-    const entries = lookup[postcode];
+      currentEntries = entries;
 
-    document.getElementById("suburbChooser").style.display = "none";
-    document.getElementById("mpResult").innerHTML = "";
+      const select = document.getElementById("suburbSelect");
+      select.innerHTML = "";
 
-    if (!entries) {
-      document.getElementById("mpResult").textContent = "No results found for that postcode.";
-      return;
+      if (entries.length === 1) {
+        showMP(entries[0]);
+        return;
+      }
+
+      const placeholder = document.createElement("option");
+      placeholder.textContent = "Select your suburb...";
+      placeholder.disabled = true;
+      placeholder.selected = true;
+      select.appendChild(placeholder);
+
+      entries.forEach((entry, index) => {
+        const opt = document.createElement("option");
+        opt.value = index;
+        opt.textContent = entry.suburb + " (" + entry.electorate + ")";
+        select.appendChild(opt);
+      });
+
+      document.getElementById("suburbChooser").style.display = "block";
     }
 
-    currentEntries = entries;
-
-    if (entries.length === 1) {
-      showMP(entries[0]);
-      return;
+    function suburbChosen() {
+      const index = document.getElementById("suburbSelect").value;
+      if (index === "") return;
+      showMP(currentEntries[index]);
     }
 
-    const select = document.getElementById("suburbSelect");
-    select.innerHTML = "";
+    function showMP(entry) {
+      const mp = entry.mp;
 
-    entries.forEach((entry, index) => {
-      const opt = document.createElement("option");
-      opt.value = index;
-      opt.textContent = entry.suburb + " (" + entry.electorate + ")";
-      select.appendChild(opt);
-    });
+      let emailBlock = "";
+      let contactButton = "";
 
-    document.getElementById("suburbChooser").style.display = "block";
-  }
+      if (mp.email) {
+        const subject = "Message from a constituent";
+        const body = `Dear ${mp.full_name},\n\n`;
+        const mailto = `mailto:${mp.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-  function suburbChosen() {
-    const index = document.getElementById("suburbSelect").value;
-    showMP(currentEntries[index]);
-  }
+        emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
 
-  function showMP(entry) {
-    const mp = entry.mp;
+        contactButton = `
+          <button class="contact-btn" onclick="tryMailto('${mailto}')">
+            CONTACT YOUR MP
+          </button>
+        `;
+      } else {
+        emailBlock = `<p><strong>Email:</strong> Not available</p>`;
+      }
 
-    let emailBlock = "";
-    let contactButton = "";
-
-    if (mp.email) {
-      const subject = "Message from a constituent";
-      const body = `Dear ${mp.full_name},\n\n`;
-      const mailto = `mailto:${mp.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-      emailBlock = `<p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>`;
-
-      contactButton = `
-        <button class="contact-btn" onclick="tryMailto('${mailto}')">
-          Contact My MP
-        </button>
+      document.getElementById("mpResult").innerHTML = `
+        <h2>${mp.full_name}</h2>
+        <p><strong>Electorate:</strong> ${entry.electorate}</p>
+        <p><strong>Party:</strong> ${mp.party}</p>
+        ${emailBlock}
+        <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
+        ${contactButton}
       `;
-    } else {
-      emailBlock = `<p><strong>Email:</strong> Not available</p>`;
     }
-
-    document.getElementById("mpResult").innerHTML = `
-      <h2>${mp.full_name}</h2>
-      <p><strong>Electorate:</strong> ${entry.electorate}</p>
-      <p><strong>Party:</strong> ${mp.party}</p>
-      ${emailBlock}
-      <p><a href="${mp.profile_page}" target="_blank">View MP Profile</a></p>
-      ${contactButton}
-    `;
-  }
   </script>
 
 </body>
