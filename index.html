@@ -93,6 +93,27 @@
 
     #mpResult:empty {
       display: none;
+      
+      .contact-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 14px;
+  font-size: 18px;
+  background: #5A7F71;
+  color: white;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .contact-btn {
+    font-size: 16px;
+    padding: 12px;
+  }
+}
+
+      
     }
   </style>
 </head>
@@ -205,6 +226,9 @@
             font-weight: bold;
             cursor: pointer;
           "
+          class="contact-btn" onclick="tryMailto('${mailto}')">
+    Contact My MP
+
           onclick="tryMailto('${mailto}')"
         >
           Contact My MP
