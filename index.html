@@ -316,22 +316,30 @@
       }
 
       // CONTACT YOUR MP button (only if email exists)
-      if (mp.email) {
-        const subject = "Message from a constituent";
-        const body = "Dear " + mp.full_name + ",\n\n";
-        const mailto = "mailto:" + mp.email +
-          "?subject=" + encodeURIComponent(subject) +
-          "&body=" + encodeURIComponent(body);
+ // CONTACT YOUR MP button (only if email exists)
+if (mp.email) {
+  const subject = "Concerns Regarding Immigration Policy";
 
-        const contactBtn = document.createElement("button");
-        contactBtn.className = "contact-btn";
-        contactBtn.textContent = "CONTACT YOUR MP";
-        contactBtn.addEventListener("click", function () {
-          tryMailto(mailto);
-        });
+  const body =
+    "Hi " + firstName + ",\n\n" +
+    "As a voter in your electorate, I want to be absolutely clear: I do not support mass‑immigration. " +
+    "Policy changes are happening without public consent, and I don’t agree with them.\n\n" +
+    "Please represent my position and oppose any policy that promotes or increases mass immigration. " +
+    "I expect my concerns to be taken seriously.";
 
-        mpResult.appendChild(contactBtn);
-      }
+  const mailto = "mailto:" + mp.email +
+    "?subject=" + encodeURIComponent(subject) +
+    "&body=" + encodeURIComponent(body);
+
+  const contactBtn = document.createElement("button");
+  contactBtn.className = "contact-btn";
+  contactBtn.textContent = "CONTACT YOUR MP";
+  contactBtn.addEventListener("click", function () {
+    tryMailto(mailto);
+  });
+
+  mpResult.appendChild(contactBtn);
+}
     }
   </script>
 
